@@ -7,7 +7,6 @@ CREATE TABLE users
     provider            VARCHAR(50)  NOT NULL,
     date_of_birth       VARCHAR(255),
     profile_picture_url TEXT,
-    -- Auditable fields
     created_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP,
     version             BIGINT       NOT NULL DEFAULT 0,
@@ -22,7 +21,6 @@ CREATE TABLE refresh_token
     token      VARCHAR(255) NOT NULL,
     expires_at TIMESTAMP    NOT NULL,
     user_id    BIGINT       NOT NULL,
-    -- Auditable fields
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     version    BIGINT       NOT NULL DEFAULT 0,
@@ -42,7 +40,6 @@ CREATE TABLE access_token
     token_type       VARCHAR(50)  NOT NULL,
     user_id          BIGINT       NOT NULL,
     refresh_token_id BIGINT       NOT NULL,
-    -- Auditable fields
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP,
     version          BIGINT       NOT NULL DEFAULT 0,
