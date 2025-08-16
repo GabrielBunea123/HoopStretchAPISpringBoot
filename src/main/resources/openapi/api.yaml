@@ -6,3 +6,112 @@ info:
 
 servers:
   - url: http://localhost:8080
+
+paths:
+  /users/user-info/{id}:
+    get:
+      tags:
+        - UserController
+      summary: Get user info
+      operationId: getUserInfo
+      description: Returns user data for a given user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '404':
+          description: User not found
+        '400':
+          description: Bad request
+  /users/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      description: Creates a new user account.
+      tags:
+        - UserController
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequestDto'
+      responses:
+        "204":
+          description: User successfully registered, no content returned
+        "400":
+          description: Invalid input data
+
+
+components:
+  schemas:
+    UserResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        display_name:
+          type: string
+          example: John Doe
+    UserRegisterRequestDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        provider:
+          type: string
+          example: EMAIL
+        password:
+          type: string
+          format: password
+          example: StrongPassword123!
+
+#paths:
+#  /api/user-info:
+#    get:
+#      summary: Get authenticated user info
+#      security:
+#        - googleOAuth: []
+#      responses:
+#        '200':
+#          description: OK
+#        '401':
+#          description: Unauthorized
+#
+#components:
+#  securitySchemes:
+#    googleOAuth:
+#      type: oauth2
+#      flows:
+#        authorizationCode:
+#          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+#          tokenUrl: https://oauth2.googleapis.com/token
+#          scopes:
+#            openid: Access identity
+#            profile: Access profile info
+#            email: Access email address
