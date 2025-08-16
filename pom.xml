@@ -189,7 +189,6 @@
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <delegatePattern>true</delegatePattern>
                                 <useJakartaEe>true</useJakartaEe>
-                                <!--suppress UnresolvedMavenProperty -->
                             </configOptions>
                         </configuration>
                     </execution>
