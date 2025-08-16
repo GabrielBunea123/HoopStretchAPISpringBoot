@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.List;
 
+@Table(name = "users", schema = "public")
 @Getter
 @Setter
 @Builder
@@ -28,7 +29,10 @@ public class User extends Auditable {
     private String displayName;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private OAuthProvider provider;
+
+    private String password;
 
     private String dateOfBirth;
 
