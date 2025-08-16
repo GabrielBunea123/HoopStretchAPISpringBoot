@@ -5,6 +5,7 @@ import com.hoopstretch.openapi.api.UsersApi;
 import com.hoopstretch.openapi.model.UserRegisterRequestDto;
 import com.hoopstretch.openapi.model.UserResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> registerUser(@RequestBody final UserRegisterRequestDto userRegisterRequestDto){
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody final UserRegisterRequestDto userRegisterRequestDto){
         userService.registerUser(userRegisterRequestDto);
         return ResponseEntity.noContent().build();
     }

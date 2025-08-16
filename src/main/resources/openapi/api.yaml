@@ -75,6 +75,11 @@ components:
           example: John Doe
     UserRegisterRequestDto:
       type: object
+      required:
+        - username
+        - email
+        - provider
+        - password
       properties:
         username:
           type: string
