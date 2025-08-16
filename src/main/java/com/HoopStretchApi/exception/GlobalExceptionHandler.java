@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException notFoundException, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(
+            final NotFoundException notFoundException,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 notFoundException.getMessage(),
@@ -22,13 +24,14 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value()
         );
 
-
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflictException(final ConflictException conflictException, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleConflictException(
+            final ConflictException conflictException,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 conflictException.getMessage(),
@@ -37,12 +40,13 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT.value()
         );
 
-
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(value = {BadRequestException.class})
-    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException exception, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(
+            final BadRequestException exception,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 exception.getMessage(),
@@ -55,7 +59,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnauthorizedException.class})
-    public ResponseEntity<ErrorResponse> handleUnauthorizedException(final UnauthorizedException exception, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(
+            final UnauthorizedException exception,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 exception.getMessage(),
@@ -68,7 +74,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {ForbiddenException.class})
-    public ResponseEntity<ErrorResponse> handleForbiddenException(final ForbiddenException exception, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleForbiddenException(
+            final ForbiddenException exception,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 exception.getMessage(),
@@ -81,7 +89,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(final MethodArgumentNotValidException exception, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleValidationErrors(
+            final MethodArgumentNotValidException exception,
+            final WebRequest request) {
 
         final String errors = exception.getBindingResult()
                 .getFieldErrors()
@@ -93,7 +103,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {RuntimeException.class})
-    public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException exception, final WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(
+            final RuntimeException exception,
+            final WebRequest request) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 "Something went wrong. Please try again later.",
