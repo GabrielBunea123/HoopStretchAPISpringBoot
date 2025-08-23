@@ -7,6 +7,9 @@ info:
 servers:
   - url: http://localhost:8080
 
+security:
+  - cookieAuth: [ ]
+
 paths:
   /users/user-info/{id}:
     get:
@@ -48,13 +51,39 @@ paths:
             schema:
               $ref: '#/components/schemas/UserRegisterRequestDto'
       responses:
-        "204":
+        "201":
           description: User successfully registered, no content returned
         "400":
           description: Invalid input data
-
+  /auth/login:
+    post:
+      summary: Log user in
+      operationId: login
+      description: Log user in
+      tags:
+        - UserController
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequestDto'
+      responses:
+        "200":
+          description: User authenticated successfully
+        "400":
+          description: Invalid input data
+        "401":
+          description: Unauthorized login
+        "403":
+          description: Access forbidden
 
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
   schemas:
     UserResponseDto:
       type: object
@@ -91,6 +120,19 @@ components:
         provider:
           type: string
           example: EMAIL
+        password:
+          type: string
+          format: password
+          example: StrongPassword123!
+    UserLoginRequestDto:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: john_doe
         password:
           type: string
           format: password
