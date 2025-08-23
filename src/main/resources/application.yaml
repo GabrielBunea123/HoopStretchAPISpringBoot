@@ -18,3 +18,22 @@ spring:
 #            user-name-attribute: sub
   application:
     name: HoopStretchApi
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: 360000 # 1hr in millis
+  refresh-expiration: 259200000 # 30 days in millis
+  jwt-cookie-secure: true
+  jwt-cookie-http-only: true
+  jwt-access-token-cookie-path: "/"
+
+cors:
+  allowed-origins:
+    - http://localhost:8080
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+  allowed-headers:
+    - Authorization
+    - Content-Type
