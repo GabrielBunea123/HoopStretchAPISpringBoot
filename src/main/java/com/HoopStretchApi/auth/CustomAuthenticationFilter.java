@@ -1,10 +1,10 @@
 package com.HoopStretchApi.auth;
 
 import com.HoopStretchApi.exception.CustomAuthException;
+import com.HoopStretchApi.model.dto.user.UserLoginRequestDto;
 import com.HoopStretchApi.service.CookieService;
 import com.HoopStretchApi.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hoopstretch.openapi.model.UserLoginRequestDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

@@ -3,7 +3,7 @@ package com.HoopStretchApi.auth;
 import com.HoopStretchApi.service.CookieService;
 import com.HoopStretchApi.service.CustomUserDetailsService;
 import com.HoopStretchApi.service.JwtService;
-import com.HoopStretchApi.util.Endpoints;
+import com.HoopStretchApi.util.enums.Endpoints;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

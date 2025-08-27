@@ -1,7 +1,7 @@
 package com.HoopStretchApi.service;
 
-import com.hoopstretch.openapi.model.UserLoginRequestDto;
-import com.hoopstretch.openapi.model.UserResponseDto;
+import com.HoopStretchApi.model.dto.user.UserLoginRequestDto;
+import com.HoopStretchApi.model.dto.user.UserResponseDto;
 
 public interface AuthService {
 

@@ -1,8 +1,8 @@
 package com.HoopStretchApi.mapper;
 
+import com.HoopStretchApi.model.dto.user.UserRegisterRequestDto;
+import com.HoopStretchApi.model.dto.user.UserResponseDto;
 import com.HoopStretchApi.model.entity.User;
-import com.hoopstretch.openapi.model.UserRegisterRequestDto;
-import com.hoopstretch.openapi.model.UserResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
