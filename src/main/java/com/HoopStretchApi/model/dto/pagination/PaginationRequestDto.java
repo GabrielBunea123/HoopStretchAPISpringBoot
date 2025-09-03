@@ -13,13 +13,10 @@ public class PaginationRequestDto {
 
     @NotNull
     private int page;
-
     @NotNull
     private int size = 10;
-
     @NotNull
     private String sortBy;
-
     @NotNull
     private SortDirection sortDirection = SortDirection.ASC;
 }

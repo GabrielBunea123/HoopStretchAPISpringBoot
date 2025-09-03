@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -67,10 +68,15 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public ExerciseResponseDto createExercise(final ExerciseRequestDto exerciseRequestDto) {
         final Exercise exercise = exerciseMapper.toExercise(exerciseRequestDto);
-        final Set<MuscleGroup> muscleGroups = new HashSet<>(muscleGroupRepository.findAllById(exerciseRequestDto.getMuscleGroupIds()));
-        final Set<EquipmentItem> equipment = new HashSet<>(equipmentItemRepository.findAllById(exerciseRequestDto.getEquipmentIds()));
+        final Set<MuscleGroup> muscleGroups = Optional.ofNullable(exerciseRequestDto.getMuscleGroupIds())
+                .map(ids -> new HashSet<>(muscleGroupRepository.findAllById(ids)))
+                .orElseGet(HashSet::new);
 
-        if (muscleGroups.size() != exerciseRequestDto.getMuscleGroupIds().size()) {
+        final Set<EquipmentItem> equipment = Optional.ofNullable(exerciseRequestDto.getEquipmentIds())
+                .map(ids -> new HashSet<>(equipmentItemRepository.findAllById(ids)))
+                .orElseGet(HashSet::new);
+
+        if (exerciseRequestDto.getMuscleGroupIds() == null || muscleGroups.size() != exerciseRequestDto.getMuscleGroupIds().size()) {
             throw new NotFoundException("Some muscle groups not found");
         }
 

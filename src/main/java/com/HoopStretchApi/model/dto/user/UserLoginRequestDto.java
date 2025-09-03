@@ -10,7 +10,6 @@ public class UserLoginRequestDto {
 
     @NotNull
     private String username;
-
     @NotNull
     private String password;
 }
