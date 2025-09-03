@@ -1,4 +1,4 @@
-package com.HoopStretchApi.util;
+package com.HoopStretchApi.util.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

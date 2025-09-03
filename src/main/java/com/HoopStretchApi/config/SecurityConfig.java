@@ -6,7 +6,7 @@ import com.HoopStretchApi.config.properties.CorsProperties;
 import com.HoopStretchApi.service.CookieService;
 import com.HoopStretchApi.service.CustomUserDetailsService;
 import com.HoopStretchApi.service.JwtService;
-import com.HoopStretchApi.util.Endpoints;
+import com.HoopStretchApi.util.enums.Endpoints;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +33,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(Endpoints.REGISTER.getValue(), Endpoints.LOGIN.getValue(), Endpoints.REFRESH.getValue(), Endpoints.SWAGGER_UI.getValue(), Endpoints.V3_API_DOCS.getValue()).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(Endpoints.REGISTER.getValue(), Endpoints.LOGIN.getValue(), Endpoints.REFRESH.getValue(), Endpoints.SWAGGER_UI.getValue(), Endpoints.V3_API_DOCS.getValue()).permitAll()
+//                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAt(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

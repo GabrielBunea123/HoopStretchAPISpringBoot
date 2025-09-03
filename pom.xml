@@ -131,16 +131,6 @@
             <version>${org.springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>${jackson-databind-nullable.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation-api.version}</version>
@@ -170,35 +160,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.8.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <configHelp>false</configHelp>
-                            <inputSpec>
-                                ${project.basedir}/src/main/resources/openapi/api.yaml
-                            </inputSpec>
-                            <generatorName>spring</generatorName>
-                            <apiPackage>com.hoopstretch.openapi.api</apiPackage>
-                            <modelPackage>com.hoopstretch.openapi.model</modelPackage>
-                            <supportingFilesToGenerate>
-                                ApiUtil.java
-                            </supportingFilesToGenerate>
-                            <configOptions>
-                                <useSpringBoot3>true</useSpringBoot3>
-                                <delegatePattern>true</delegatePattern>
-                                <useJakartaEe>true</useJakartaEe>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

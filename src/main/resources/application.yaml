@@ -37,3 +37,6 @@ cors:
   allowed-headers:
     - Authorization
     - Content-Type
+server:
+  servlet:
+    context-path: /api

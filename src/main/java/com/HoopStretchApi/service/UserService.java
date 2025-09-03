@@ -1,7 +1,7 @@
 package com.HoopStretchApi.service;
 
-import com.hoopstretch.openapi.model.UserRegisterRequestDto;
-import com.hoopstretch.openapi.model.UserResponseDto;
+import com.HoopStretchApi.model.dto.user.UserRegisterRequestDto;
+import com.HoopStretchApi.model.dto.user.UserResponseDto;
 
 public interface UserService {
     UserResponseDto getUserById(final Long id);

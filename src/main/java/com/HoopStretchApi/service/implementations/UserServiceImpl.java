@@ -3,13 +3,15 @@ package com.HoopStretchApi.service.implementations;
 import com.HoopStretchApi.exception.ConflictException;
 import com.HoopStretchApi.exception.NotFoundException;
 import com.HoopStretchApi.mapper.UserMapper;
+import com.HoopStretchApi.model.dto.user.UserRegisterRequestDto;
+import com.HoopStretchApi.model.dto.user.UserResponseDto;
 import com.HoopStretchApi.model.entity.User;
 import com.HoopStretchApi.repository.UserRepository;
 import com.HoopStretchApi.service.UserService;
-import com.hoopstretch.openapi.model.UserRegisterRequestDto;
-import com.hoopstretch.openapi.model.UserResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
