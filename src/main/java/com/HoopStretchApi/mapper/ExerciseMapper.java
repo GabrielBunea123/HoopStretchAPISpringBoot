@@ -21,17 +21,12 @@ public interface ExerciseMapper {
 
     ExerciseResponseDto toExerciseResponseDto(final Exercise exercise);
     Exercise toExercise(final ExerciseRequestDto exerciseRequestDto);
+    ExerciseFilterDto toExerciseFilterDto(final String name, final String muscleGroup, final String equipmentItem, final ExerciseType type);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "muscleGroups", source="muscleGroupIds", qualifiedByName = "mapMuscleGroups")
     @Mapping(target = "equipment", source="equipmentIds", qualifiedByName = "mapEquipmentItems")
     void updateExerciseFromDto(final ExerciseRequestDto dto, @MappingTarget final Exercise entity);
-
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "muscleGroup", source = "muscleGroup")
-    @Mapping(target = "equipmentItem", source = "equipmentItem")
-    @Mapping(target = "type", source = "type")
-    ExerciseFilterDto toExerciseFilterDto(final String name, final String muscleGroup, final String equipmentItem, final ExerciseType type);
 
     @Named("mapMuscleGroups")
     default Set<MuscleGroup> mapMuscleGroups(final Set<Long> muscleGroupIds) {

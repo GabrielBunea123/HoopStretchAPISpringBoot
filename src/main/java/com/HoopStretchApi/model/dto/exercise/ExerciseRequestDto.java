@@ -19,7 +19,6 @@ public class ExerciseRequestDto {
     private boolean isDoubleSided;
     @NotNull
     private Set<Long> muscleGroupIds;
-    @NotNull
     private Set<Long> equipmentIds;
     @NotNull
     private ExerciseType type;

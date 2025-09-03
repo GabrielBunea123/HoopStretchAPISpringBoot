@@ -12,13 +12,10 @@ public class UserRegisterRequestDto {
 
     @NotNull
     private String username;
-
     @NotNull
     private String email;
-
     @NotNull
     private String provider;
-
     @NotNull
     private String password;
 }
