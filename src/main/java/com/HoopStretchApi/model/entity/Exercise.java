@@ -37,7 +37,7 @@ public class Exercise extends Auditable {
 
     @ManyToMany
     @JoinTable(
-            name = "exercise_quipment_item",
+            name = "exercise_equipment_item",
             joinColumns = @JoinColumn(name = "exercise_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_item_id")
     )

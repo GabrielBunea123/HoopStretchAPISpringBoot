@@ -3,10 +3,10 @@ package com.HoopStretchApi.controller;
 import com.HoopStretchApi.mapper.ExerciseMapper;
 import com.HoopStretchApi.mapper.PaginationMapper;
 import com.HoopStretchApi.model.dto.exercise.ExerciseFilterDto;
+import com.HoopStretchApi.model.dto.exercise.ExerciseRequestDto;
 import com.HoopStretchApi.model.dto.exercise.ExerciseResponseDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationRequestDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
-import com.HoopStretchApi.model.dto.user.UserResponseDto;
 import com.HoopStretchApi.service.ExerciseService;
 import com.HoopStretchApi.util.enums.ExerciseType;
 import com.HoopStretchApi.util.enums.SortDirection;
@@ -18,12 +18,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/exercises")
@@ -43,8 +40,8 @@ public class ExerciseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = @Content(schema = @Schema(implementation = PaginationResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "400", description = "Bad request")
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
     public ResponseEntity<PaginationResponseDto<ExerciseResponseDto>> getExercises(
             @RequestParam(defaultValue = "0") final int page,
@@ -66,6 +63,68 @@ public class ExerciseController {
                 equipmentItem,
                 type);
         return ResponseEntity.ok(exerciseService.getExercises(paginationRequestDto, exerciseFilterDto));
+    }
+
+    @Operation(summary = "Get exercise by id",
+            description = "Gets an existing exercise by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Exercise fetched successfully",
+                    content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Exercise not found", content = @Content),
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<ExerciseResponseDto> getExerciseById(
+            @PathVariable final Long id) {
+        final ExerciseResponseDto exerciseResponseDto = exerciseService.getExerciseById(id);
+        return ResponseEntity.ok(exerciseResponseDto);
+    }
+
+    @PostMapping("/")
+    @Operation(
+            summary = "Add exercise",
+            description = "Creates a new exercises and returns it"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User found",
+                    content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody final ExerciseRequestDto exerciseRequestDto){
+        final ExerciseResponseDto exerciseResponseDto = exerciseService.createExercise(exerciseRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(exerciseResponseDto);
+    }
+
+    @Operation(summary = "Update an exercise",
+            description = "Updates an existing exercise by its ID. Requires full object.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Exercise updated successfully",
+                    content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Exercise not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<ExerciseResponseDto> updateExercise(
+            @PathVariable final Long id,
+            @RequestBody ExerciseRequestDto exerciseRequestDto) {
+        final ExerciseResponseDto exerciseResponseDto = exerciseService.updateExercise(id, exerciseRequestDto);
+        return ResponseEntity.ok(exerciseResponseDto);
+    }
+
+    @Operation(summary = "Delete an exercise",
+            description = "Deletes an existing exercise by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Exercise deleted successfully",
+                    content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Exercise not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExercise(
+            @PathVariable final Long id) {
+        exerciseService.deleteExercise(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

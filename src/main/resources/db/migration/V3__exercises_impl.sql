@@ -1,16 +1,16 @@
 CREATE TABLE muscle_group (
-    id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     default_priority_number INTEGER NOT NULL DEFAULT 1
 );
 
 CREATE TABLE equipment_item (
-    id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE exercise (
-    id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     is_double_sided BOOLEAN NOT NULL,
     type VARCHAR(50),
@@ -31,7 +31,7 @@ CREATE TABLE exercise_muscle_group (
     CONSTRAINT fk_muscle_group FOREIGN KEY (muscle_group_id) REFERENCES muscle_group(id)
 );
 
-CREATE TABLE exercise_quipment_item (
+CREATE TABLE exercise_equipment_item (
     exercise_id BIGINT NOT NULL,
     equipment_item_id BIGINT NOT NULL,
     PRIMARY KEY (exercise_id, equipment_item_id),
@@ -68,7 +68,7 @@ VALUES
 INSERT INTO exercise_muscle_group (exercise_id, muscle_group_id) VALUES
     (1, 14), (2, 2), (3, 13);
 
-INSERT INTO exercise_quipment_item (exercise_id, equipment_item_id) VALUES
+INSERT INTO exercise_equipment_item (exercise_id, equipment_item_id) VALUES
     (1, 1), (2, 2), (3, 2);
 
 INSERT INTO exercise_guidelines (exercise_id, guideline) VALUES

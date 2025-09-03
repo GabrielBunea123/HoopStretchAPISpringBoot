@@ -31,8 +31,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "400", description = "Bad request")
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
     public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable final Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
@@ -45,7 +45,7 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User successfully registered, no content returned"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
     public ResponseEntity<Void> registerUser(@Valid @RequestBody final UserRegisterRequestDto userRegisterRequestDto){
         userService.registerUser(userRegisterRequestDto);

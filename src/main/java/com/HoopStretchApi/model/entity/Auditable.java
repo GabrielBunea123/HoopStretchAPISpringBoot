@@ -31,6 +31,6 @@ public abstract class Auditable {
     protected Long version;
 
     @Column(name = "is_deleted", nullable = false)
-    protected boolean deleted = false;
+    protected boolean isDeleted = false;
 }
 

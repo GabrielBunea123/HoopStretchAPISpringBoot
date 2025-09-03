@@ -9,7 +9,9 @@ import com.HoopStretchApi.model.entity.User;
 import com.HoopStretchApi.repository.UserRepository;
 import com.HoopStretchApi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 

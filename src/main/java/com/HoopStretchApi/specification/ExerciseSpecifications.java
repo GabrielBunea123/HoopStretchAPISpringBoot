@@ -4,7 +4,9 @@ import com.HoopStretchApi.model.dto.exercise.ExerciseFilterDto;
 import com.HoopStretchApi.model.entity.Exercise;
 import com.HoopStretchApi.util.enums.ExerciseType;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ExerciseSpecifications {
 
     public static Specification<Exercise> hasNameLike(final String name) {
