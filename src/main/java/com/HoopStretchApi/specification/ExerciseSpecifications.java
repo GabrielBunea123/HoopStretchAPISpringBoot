@@ -23,7 +23,7 @@ public class ExerciseSpecifications {
             if(muscleGroupName == null || muscleGroupName.trim().isEmpty()){
                 return null;
             }
-            return cb.equal(root.join("muscleGroups").get("name"), muscleGroupName);
+            return cb.equal(cb.lower(root.join("muscleGroups").get("name")), muscleGroupName.toLowerCase());
         };
     }
 
@@ -32,7 +32,7 @@ public class ExerciseSpecifications {
             if(equipmentItemName == null || equipmentItemName.trim().isEmpty()){
                 return null;
             }
-            return cb.equal(root.join("equipment").get("name"),  equipmentItemName);
+            return cb.equal(cb.lower(root.join("equipment").get("name")),  equipmentItemName.toLowerCase());
         };
     }
 
