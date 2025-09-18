@@ -81,11 +81,11 @@ public class ExerciseController {
 
     @PostMapping("/")
     @Operation(
-            summary = "Add exercise",
+            summary = "Create exercise",
             description = "Creates a new exercises and returns it"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User found",
+            @ApiResponse(responseCode = "201", description = "Exercise created",
                     content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
@@ -115,8 +115,7 @@ public class ExerciseController {
     @Operation(summary = "Delete an exercise",
             description = "Deletes an existing exercise by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Exercise deleted successfully",
-                    content = @Content(schema = @Schema(implementation = ExerciseResponseDto.class))),
+            @ApiResponse(responseCode = "204", description = "Exercise deleted successfully", content = @Content),
             @ApiResponse(responseCode = "404", description = "Exercise not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
