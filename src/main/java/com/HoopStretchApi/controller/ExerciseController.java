@@ -22,6 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.HoopStretchApi.util.Constants.DEFAULT_PAGE;
+import static com.HoopStretchApi.util.Constants.DEFAULT_PAGE_SIZE;
+
 @RestController
 @RequestMapping("/exercises")
 @AllArgsConstructor
@@ -44,8 +47,8 @@ public class ExerciseController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
     public ResponseEntity<PaginationResponseDto<ExerciseResponseDto>> getExercises(
-            @RequestParam(defaultValue = "0") final int page,
-            @RequestParam(defaultValue = "10") final int size,
+            @RequestParam(defaultValue = DEFAULT_PAGE) final int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) final int size,
             @RequestParam(required = false) final String sortBy,
             @RequestParam(required = false, defaultValue = "ASC") final SortDirection sortDirection,
             @RequestParam(required = false, defaultValue = "") final String name,
