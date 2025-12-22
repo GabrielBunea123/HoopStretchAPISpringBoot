@@ -8,7 +8,7 @@ import com.HoopStretchApi.model.dto.protocol.ProtocolResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface ProtocolService {
-    ProtocolResponseDto createProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails);
+    ProtocolResponseDto createUserProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails);
     ProtocolResponseDto getUserProtocolById(final UserDetails userDetails, final Long id);
     PaginationResponseDto<ProtocolResponseDto> getUserProtocols(
             final UserDetails userDetails,

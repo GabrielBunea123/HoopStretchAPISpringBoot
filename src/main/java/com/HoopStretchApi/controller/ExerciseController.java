@@ -50,7 +50,7 @@ public class ExerciseController {
             @RequestParam(defaultValue = DEFAULT_PAGE) final int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) final int size,
             @RequestParam(required = false) final String sortBy,
-            @RequestParam(required = false, defaultValue = "ASC") final SortDirection sortDirection,
+            @RequestParam(required = false, defaultValue = SortDirection.DEFAULT_SORT_DIRECTION) final SortDirection sortDirection,
             @RequestParam(required = false, defaultValue = "") final String name,
             @RequestParam(required = false) final String muscleGroup,
             @RequestParam(required = false) final String equipmentItem,

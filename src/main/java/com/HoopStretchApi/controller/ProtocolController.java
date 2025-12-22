@@ -70,7 +70,7 @@ public class ProtocolController {
             @Valid @RequestBody ProtocolRequestDto protocolRequestDto,
             @AuthenticationPrincipal UserDetails userDetails
     ){
-        final ProtocolResponseDto protocolResponseDto = protocolService.createProtocol(protocolRequestDto, userDetails);
+        final ProtocolResponseDto protocolResponseDto = protocolService.createUserProtocol(protocolRequestDto, userDetails);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(protocolResponseDto);
@@ -101,9 +101,9 @@ public class ProtocolController {
             @RequestParam(defaultValue = DEFAULT_PAGE) final int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) final int size,
             @RequestParam(required = false) final String sortBy,
-            @RequestParam(required = false, defaultValue = "ASC") final SortDirection sortDirection,
+            @RequestParam(required = false, defaultValue = SortDirection.DEFAULT_SORT_DIRECTION) final SortDirection sortDirection,
             @RequestParam(required = false, defaultValue = "") final String name,
-            @RequestParam(required = false, defaultValue = "USER") final ProtocolVisibility visibility,
+            @RequestParam(required = false, defaultValue = ProtocolVisibility.DEFAULT_PROTOCOL_VISIBILITY) final ProtocolVisibility visibility,
             @AuthenticationPrincipal UserDetails userDetails){
         final PaginationRequestDto paginationRequestDto = paginationMapper.toPaginationRequestDto(
                 page,

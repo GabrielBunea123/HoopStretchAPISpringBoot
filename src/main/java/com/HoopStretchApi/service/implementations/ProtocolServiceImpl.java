@@ -2,7 +2,6 @@ package com.HoopStretchApi.service.implementations;
 
 import com.HoopStretchApi.exception.NotFoundException;
 import com.HoopStretchApi.mapper.ProtocolMapper;
-import com.HoopStretchApi.model.dto.exercise.ExerciseResponseDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationRequestDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
@@ -34,7 +33,7 @@ public class ProtocolServiceImpl implements ProtocolService {
     private final ProtocolSpecifications protocolSpecifications;
 
     @Override
-    public ProtocolResponseDto createProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails) {
+    public ProtocolResponseDto createUserProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails) {
         final User owner = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Protocol protocol = protocolMapper.toProtocol(protocolRequestDto, owner);
@@ -58,7 +57,6 @@ public class ProtocolServiceImpl implements ProtocolService {
             final PaginationRequestDto paginationRequestDto,
             final ProtocolFilterDto protocolFilterDto) {
 
-        // TODO: add user details when fetching protocols
         final Pageable pageable = PaginationUtils.getPageable(paginationRequestDto);
         final Specification<Protocol> spec = protocolSpecifications.buildFilters(protocolFilterDto);
         final Page<Protocol> protocolsPage = protocolRepository.findAll(spec, pageable);
@@ -74,27 +72,4 @@ public class ProtocolServiceImpl implements ProtocolService {
                 protocolsPage.getTotalPages()
         );
     }
-
-    public PaginationResponseDto<ExerciseResponseDto> getProtocolExercises(){
-        // TODO: implement it
-        return null;
-    }
-
-//    @Override
-//    public PaginationResponseDto<ExerciseResponseDto> getExercises(final PaginationRequestDto paginationRequestDto, final ExerciseFilterDto exerciseFilterDto) {
-//        final Pageable pageable = PaginationUtils.getPageable(paginationRequestDto);
-//        final Specification<Exercise> spec = exerciseSpecifications.buildFilters(exerciseFilterDto);
-//        final Page<Exercise> exercisesPage = exerciseRepository.findAll(spec, pageable);
-//        final List<ExerciseResponseDto> exercises = exercisesPage.getContent().stream()
-//                .map(exerciseMapper::toExerciseResponseDto)
-//                .toList();
-//
-//        return new PaginationResponseDto<>(
-//                exercises,
-//                exercisesPage.getNumber(),
-//                exercisesPage.getSize(),
-//                exercisesPage.getTotalElements(),
-//                exercisesPage.getTotalPages()
-//        );
-//    }
 }
