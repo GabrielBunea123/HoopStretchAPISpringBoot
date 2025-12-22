@@ -2,6 +2,7 @@ package com.HoopStretchApi.service.implementations;
 
 import com.HoopStretchApi.exception.NotFoundException;
 import com.HoopStretchApi.mapper.ProtocolMapper;
+import com.HoopStretchApi.model.dto.exercise.ExerciseResponseDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationRequestDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
@@ -21,6 +22,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProtocolServiceImpl implements ProtocolService {
@@ -31,8 +34,8 @@ public class ProtocolServiceImpl implements ProtocolService {
     private final ProtocolSpecifications protocolSpecifications;
 
     @Override
-    public ProtocolResponseDto createProtocol(final ProtocolRequestDto protocolRequestDto) {
-        final User owner = userRepository.findById(protocolRequestDto.getOwnerId())
+    public ProtocolResponseDto createProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails) {
+        final User owner = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Protocol protocol = protocolMapper.toProtocol(protocolRequestDto, owner);
         protocol = protocolRepository.save(protocol);
@@ -55,10 +58,25 @@ public class ProtocolServiceImpl implements ProtocolService {
             final PaginationRequestDto paginationRequestDto,
             final ProtocolFilterDto protocolFilterDto) {
 
+        // TODO: add user details when fetching protocols
         final Pageable pageable = PaginationUtils.getPageable(paginationRequestDto);
         final Specification<Protocol> spec = protocolSpecifications.buildFilters(protocolFilterDto);
-        // TODO: Add ProtocolVisibility as default filter
         final Page<Protocol> protocolsPage = protocolRepository.findAll(spec, pageable);
+        final List<ProtocolResponseDto> protocols = protocolsPage.getContent().stream()
+                .map(protocolMapper::toProtocolResponseDto)
+                .toList();
+
+        return new PaginationResponseDto<>(
+                protocols,
+                protocolsPage.getNumber(),
+                protocolsPage.getSize(),
+                protocolsPage.getTotalElements(),
+                protocolsPage.getTotalPages()
+        );
+    }
+
+    public PaginationResponseDto<ExerciseResponseDto> getProtocolExercises(){
+        // TODO: implement it
         return null;
     }
 

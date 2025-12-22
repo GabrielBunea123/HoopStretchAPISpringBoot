@@ -1,9 +1,14 @@
 package com.HoopStretchApi.controller;
 
+import com.HoopStretchApi.mapper.PaginationMapper;
+import com.HoopStretchApi.mapper.ProtocolMapper;
+import com.HoopStretchApi.model.dto.pagination.PaginationRequestDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
+import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolResponseDto;
 import com.HoopStretchApi.service.ProtocolService;
+import com.HoopStretchApi.util.enums.ProtocolVisibility;
 import com.HoopStretchApi.util.enums.SortDirection;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,10 +33,12 @@ import static com.HoopStretchApi.util.Constants.DEFAULT_PAGE_SIZE;
 public class ProtocolController {
 
     private final ProtocolService protocolService;
+    private final PaginationMapper paginationMapper;
+    private final ProtocolMapper protocolMapper;
 
     @PostMapping("/")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Protocol generated",
+            @ApiResponse(responseCode = "201", description = "Protocol generated successfully",
                     content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
@@ -42,7 +49,7 @@ public class ProtocolController {
 
     @PostMapping("/me/{protocolId}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User protocol created",
+            @ApiResponse(responseCode = "201", description = "User protocol created successfully from already generated protocol",
                     content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
@@ -55,12 +62,15 @@ public class ProtocolController {
 
     @PostMapping("/me")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Protocol created",
+            @ApiResponse(responseCode = "201", description = "User protocol created from scratch was a success",
                     content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
-    public ResponseEntity<ProtocolResponseDto> createProtocol(@Valid @RequestBody ProtocolRequestDto protocolRequestDto){
-        final ProtocolResponseDto protocolResponseDto = protocolService.createProtocol(protocolRequestDto);
+    public ResponseEntity<ProtocolResponseDto> createUserProtocol(
+            @Valid @RequestBody ProtocolRequestDto protocolRequestDto,
+            @AuthenticationPrincipal UserDetails userDetails
+    ){
+        final ProtocolResponseDto protocolResponseDto = protocolService.createProtocol(protocolRequestDto, userDetails);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(protocolResponseDto);
@@ -82,7 +92,7 @@ public class ProtocolController {
 
     @GetMapping("/me")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Fetched user protocols",
+            @ApiResponse(responseCode = "200", description = "Fetched user protocols successfully",
                     content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "User protocols not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
@@ -93,8 +103,17 @@ public class ProtocolController {
             @RequestParam(required = false) final String sortBy,
             @RequestParam(required = false, defaultValue = "ASC") final SortDirection sortDirection,
             @RequestParam(required = false, defaultValue = "") final String name,
+            @RequestParam(required = false, defaultValue = "USER") final ProtocolVisibility visibility,
             @AuthenticationPrincipal UserDetails userDetails){
-        return null;
+        final PaginationRequestDto paginationRequestDto = paginationMapper.toPaginationRequestDto(
+                page,
+                size,
+                sortBy,
+                String.valueOf(sortDirection)
+        );
+        final ProtocolFilterDto protocolFilterDto = protocolMapper.toProtocolFilterDto(name, visibility);
+        final PaginationResponseDto<ProtocolResponseDto> protocols = protocolService.getUserProtocols(userDetails, paginationRequestDto,protocolFilterDto);
+        return ResponseEntity.ok(protocols);
     }
 
 }

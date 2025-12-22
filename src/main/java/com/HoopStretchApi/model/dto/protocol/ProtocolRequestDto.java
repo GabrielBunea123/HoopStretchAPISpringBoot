@@ -20,5 +20,6 @@ public class ProtocolRequestDto {
     private ProtocolType type;
     @NotNull
     private ProtocolVisibility visibility;
-    private Long ownerId;
+    @NotNull
+    private boolean isGenerated;
 }

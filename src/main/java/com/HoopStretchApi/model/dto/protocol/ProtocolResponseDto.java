@@ -23,6 +23,7 @@ public class ProtocolResponseDto {
     private ProtocolType type;
     private ProtocolVisibility visibility;
     private int durationSeconds;
+    private boolean isGenerated;
     private UserResponseDto owner;
     private Set<ProtocolExerciseResponseDto> exercises = new LinkedHashSet<>();
 }
