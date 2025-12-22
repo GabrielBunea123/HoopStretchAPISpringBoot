@@ -1,4 +1,4 @@
-package com.HoopStretchApi.enums;
+package com.HoopStretchApi.util.enums;
 
 public enum OAuthProvider {
     GOOGLE,

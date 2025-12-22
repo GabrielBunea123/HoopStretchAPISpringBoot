@@ -7,7 +7,9 @@ import com.HoopStretchApi.model.dto.pagination.PaginationRequestDto;
 import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
 
 public interface ExerciseService {
-    PaginationResponseDto<ExerciseResponseDto> getExercises(final PaginationRequestDto paginationRequestDto, final ExerciseFilterDto exerciseFilterDto);
+    PaginationResponseDto<ExerciseResponseDto> getExercises(
+            final PaginationRequestDto paginationRequestDto,
+            final ExerciseFilterDto exerciseFilterDto);
     ExerciseResponseDto getExerciseById(final Long id);
     ExerciseResponseDto createExercise(final ExerciseRequestDto exerciseRequestDto);
     ExerciseResponseDto updateExercise(final Long id, final ExerciseRequestDto exerciseRequestDto);

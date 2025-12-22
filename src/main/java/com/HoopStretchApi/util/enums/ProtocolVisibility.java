@@ -10,4 +10,5 @@ public enum ProtocolVisibility {
     USER("User");
 
     private final String value;
+    public static final String DEFAULT_PROTOCOL_VISIBILITY = "USER";
 }

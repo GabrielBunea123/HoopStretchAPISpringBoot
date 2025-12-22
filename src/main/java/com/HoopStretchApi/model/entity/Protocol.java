@@ -39,6 +39,9 @@ public class Protocol extends Auditable {
     @Column(nullable = false)
     private int durationSeconds;
 
+    @Column(nullable = false)
+    private boolean isGenerated;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User owner;

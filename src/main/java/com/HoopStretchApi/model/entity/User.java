@@ -1,6 +1,6 @@
 package com.HoopStretchApi.model.entity;
 
-import com.HoopStretchApi.enums.OAuthProvider;
+import com.HoopStretchApi.util.enums.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

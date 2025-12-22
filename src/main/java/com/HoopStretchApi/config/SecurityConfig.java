@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,9 +34,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers(Endpoints.REGISTER.getValue(), Endpoints.LOGIN.getValue(), Endpoints.REFRESH.getValue(), Endpoints.SWAGGER_UI.getValue(), Endpoints.V3_API_DOCS.getValue()).permitAll()
-//                        .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                        .requestMatchers(Endpoints.REGISTER.getValue(), Endpoints.LOGIN.getValue(), Endpoints.REFRESH.getValue(), Endpoints.SWAGGER_UI_ALL.getValue(), Endpoints.V3_API_DOCS_ALL.getValue()).permitAll()
+                        .anyRequest().authenticated()
+//                                .anyRequest().permitAll()
 
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,7 +58,8 @@ public class SecurityConfig {
             final HandlerExceptionResolver handlerExceptionResolver,
             final JwtService jwtService,
             final CustomUserDetailsService customUserDetailsService,
-            final CookieService cookieService) {
+            final CookieService cookieService
+    ) {
         return new JwtAuthenticationFilter(
                 handlerExceptionResolver,
                 jwtService,
