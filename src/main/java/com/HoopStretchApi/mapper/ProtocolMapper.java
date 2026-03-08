@@ -9,11 +9,19 @@ import com.HoopStretchApi.util.enums.ProtocolVisibility;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class, ProtocolExerciseMapper.class })
 public interface ProtocolMapper {
 
     @Mapping(target = "id", ignore = true)
-    Protocol toProtocol(final ProtocolRequestDto protocolRequestDto, final User owner);
+    @Mapping(target = "exercises", ignore = true)
+    @Mapping(target = "visibility", source = "visibility")
+    @Mapping(target = "generated", source = "generated")
+    Protocol toProtocol(
+            final ProtocolRequestDto dto,
+            final ProtocolVisibility visibility,
+            final boolean generated,
+            final User owner
+    );
     ProtocolFilterDto toProtocolFilterDto(final String name, final ProtocolVisibility visibility);
 
     ProtocolResponseDto toProtocolResponseDto(final Protocol protocol);

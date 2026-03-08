@@ -22,10 +22,20 @@ public class ProtocolSpecifications {
         return (root, query, cb) -> cb.equal(root.get("visibility"), visibility);
     }
 
-    public Specification<Protocol> buildFilters(final ProtocolFilterDto protocolFilterDto) {
+    public static Specification<Protocol> hasOwner(final String username) {
+        return (root, query, cb) -> {
+            if (username == null) {
+                return null;
+            }
+            return cb.equal(root.get("owner").get("username"), username);
+        };
+    }
+
+    public Specification<Protocol> buildFilters(final String username, final ProtocolFilterDto protocolFilterDto) {
         return Specification.allOf(
                 ProtocolSpecifications.hasNameLike(protocolFilterDto.getName()),
-                ProtocolSpecifications.hasVisibility(protocolFilterDto.getVisibility())
+                ProtocolSpecifications.hasVisibility(protocolFilterDto.getVisibility()),
+                ProtocolSpecifications.hasOwner(username)
         );
     }
 }

@@ -5,10 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ProtocolType {
+public enum ProtocolPurpose {
     PREGAME("Pregame"),
     DAILY("Daily"),
-    POSTGAME("Postgame");
+    POSTGAME("Postgame"),
+    ASSESSMENT("Assessment");
 
     private final String value;
 }

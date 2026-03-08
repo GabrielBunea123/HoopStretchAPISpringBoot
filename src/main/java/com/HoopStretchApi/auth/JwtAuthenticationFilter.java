@@ -1,5 +1,6 @@
 package com.HoopStretchApi.auth;
 
+import com.HoopStretchApi.exception.UnauthorizedException;
 import com.HoopStretchApi.service.CookieService;
 import com.HoopStretchApi.service.CustomUserDetailsService;
 import com.HoopStretchApi.service.JwtService;
@@ -58,7 +59,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 filterChain.doFilter(request, response);
             } catch (Exception exception) {
-                handlerExceptionResolver.resolveException(request, response, null, exception);
+                logger.error(String.format("Could not authorize user: %s", exception.getMessage()));
+                final UnauthorizedException unauthorizedException = new UnauthorizedException("Not authorized to access this resource");
+                handlerExceptionResolver.resolveException(request, response, null, unauthorizedException);
             }
         } else{
             filterChain.doFilter(request,response);

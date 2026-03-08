@@ -1,7 +1,7 @@
 package com.HoopStretchApi.model.entity;
 
-import com.HoopStretchApi.util.enums.ProtocolCategory;
-import com.HoopStretchApi.util.enums.ProtocolType;
+import com.HoopStretchApi.util.enums.ProtocolTarget;
+import com.HoopStretchApi.util.enums.ProtocolPurpose;
 import com.HoopStretchApi.util.enums.ProtocolVisibility;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,22 +25,22 @@ public class Protocol extends Auditable {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private ProtocolCategory category;
+    @Column
+    private ProtocolTarget target;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProtocolType type;
+    @Column
+    private ProtocolPurpose purpose;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProtocolVisibility visibility;
 
-    @Column(nullable = false)
+    @Column
     private int durationSeconds;
 
     @Column(nullable = false)
-    private boolean isGenerated;
+    private boolean generated;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

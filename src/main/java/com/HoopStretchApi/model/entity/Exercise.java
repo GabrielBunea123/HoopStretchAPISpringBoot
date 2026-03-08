@@ -27,7 +27,7 @@ public class Exercise extends Auditable {
     @Column(nullable=false)
     private boolean isDoubleSided;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "exercise_muscle_group",
             joinColumns = @JoinColumn(name = "exercise_id"),

@@ -29,14 +29,16 @@ public class ProtocolExerciseController {
     private final ProtocolExerciseService protocolExerciseService;
     private final ExerciseMapper exerciseMapper;
 
-    @PostMapping("/")
+    @PostMapping("/{protocolId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Protocol exercise created",
                     content = @Content(schema = @Schema(implementation = ProtocolExerciseResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
-    public ResponseEntity<ProtocolExerciseResponseDto> createProtocolExercise(@Valid @RequestBody final ProtocolExerciseRequestDto protocolExerciseRequestDto){
-        final ProtocolExerciseResponseDto protocolExerciseResponseDto = protocolExerciseService.createProtocolExercise(protocolExerciseRequestDto);
+    public ResponseEntity<ProtocolExerciseResponseDto> createProtocolExercise(
+            @PathVariable final Long protocolId,
+            @Valid @RequestBody final ProtocolExerciseRequestDto protocolExerciseRequestDto){
+        final ProtocolExerciseResponseDto protocolExerciseResponseDto = protocolExerciseService.createProtocolExercise(protocolId, protocolExerciseRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(protocolExerciseResponseDto);
@@ -50,11 +52,11 @@ public class ProtocolExerciseController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
     public ResponseEntity<List<ProtocolExerciseResponseDto>> getProtocolExercises(
-            @PathVariable Long protocolId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String muscleGroup,
-            @RequestParam(required = false) String equipmentItem,
-            @RequestParam(required = false) ExerciseType type){
+            @PathVariable final Long protocolId,
+            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final String muscleGroup,
+            @RequestParam(required = false) final String equipmentItem,
+            @RequestParam(required = false) final ExerciseType type){
         final ExerciseFilterDto exerciseFilterDto = exerciseMapper.toExerciseFilterDto(
                 name,
                 muscleGroup,
@@ -69,7 +71,7 @@ public class ProtocolExerciseController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExercise(
+    public ResponseEntity<Void> deleteProtocolExercise(
             @PathVariable final Long id) {
         protocolExerciseService.deleteProtocolExercise(id);
         return ResponseEntity.noContent().build();

@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProtocolExerciseRequestDto {
-    private Long protocolId;
     private Long exerciseId;
     private int duration;
 }

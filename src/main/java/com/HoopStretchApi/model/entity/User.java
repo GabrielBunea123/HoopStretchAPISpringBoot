@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,6 +47,23 @@ public class User extends Auditable implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RefreshToken> refreshTokens;
+
+    @Builder.Default
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<UserMuscle> userMuscles = new ArrayList<>();
+
+    public void addMuscleGroup(final MuscleGroup muscleGroup) {
+        final UserMuscle muscle = new UserMuscle();
+        muscle.setUser(this);
+        muscle.setMuscleGroup(muscleGroup);
+        muscle.setPriority(muscleGroup.getDefaultPriorityNumber());
+        this.userMuscles.add(muscle);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
