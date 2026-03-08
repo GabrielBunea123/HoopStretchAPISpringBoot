@@ -1,5 +1,7 @@
 package com.HoopStretchApi.exception;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -94,18 +97,19 @@ public class GlobalExceptionHandler {
             final WebRequest request) {
 
         final String errors = exception.getBindingResult()
-                .getFieldErrors()
+                .getAllErrors()
                 .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
 
         return handleBadRequestException(new BadRequestException(errors), request);
     }
 
-    @ExceptionHandler(value = {RuntimeException.class})
-    public ResponseEntity<ErrorResponse> handleRuntimeException(
-            final RuntimeException exception,
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<ErrorResponse> handleException(
+            final Exception exception,
             final WebRequest request) {
+        log.error("Exception occurred: {}", exception.getMessage(), exception);
         final ErrorResponse errorResponse = new ErrorResponse(
                 System.currentTimeMillis(),
                 "Something went wrong. Please try again later.",

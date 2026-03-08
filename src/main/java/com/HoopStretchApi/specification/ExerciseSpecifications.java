@@ -41,7 +41,7 @@ public class ExerciseSpecifications {
             if(exerciseType == null){
                 return null;
             }
-            return cb.equal(root.get("exerciseType"), exerciseType);
+            return cb.equal(root.get("type"), exerciseType);
         };
     }
     public Specification<Exercise> buildFilters(final ExerciseFilterDto exerciseFilterDto) {

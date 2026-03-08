@@ -23,7 +23,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user-info/{id}")
+    @GetMapping("/user-info/{userId}")
     @Operation(
             summary = "Get user info",
             description = "Returns user data for a given user ID"
@@ -34,8 +34,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
     })
-    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable final Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable final Long userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @PostMapping("/register")

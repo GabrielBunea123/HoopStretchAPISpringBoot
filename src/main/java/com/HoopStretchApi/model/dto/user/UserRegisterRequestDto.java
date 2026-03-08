@@ -1,5 +1,6 @@
 package com.HoopStretchApi.model.dto.user;
 
+import com.HoopStretchApi.util.enums.OAuthProvider;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class UserRegisterRequestDto {
     @NotNull
     private String email;
     @NotNull
-    private String provider;
+    private OAuthProvider provider;
     @NotNull
     private String password;
 }

@@ -5,13 +5,16 @@ import com.HoopStretchApi.model.dto.pagination.PaginationResponseDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolResponseDto;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 public interface ProtocolService {
-    ProtocolResponseDto createUserProtocol(final ProtocolRequestDto protocolRequestDto, final UserDetails userDetails);
-    ProtocolResponseDto getUserProtocolById(final UserDetails userDetails, final Long id);
+    ProtocolResponseDto createPublicProtocol(final ProtocolRequestDto protocolRequestDto);
+    ProtocolResponseDto createUserProtocol(final ProtocolRequestDto protocolRequestDto, final String username);
+    ProtocolResponseDto createMobilityTestProtocol(final List<Long> exerciseIds);
+    ProtocolResponseDto getUserProtocolById(final String username, final Long id);
     PaginationResponseDto<ProtocolResponseDto> getUserProtocols(
-            final UserDetails userDetails,
+            final String username,
             final PaginationRequestDto paginationRequestDto,
             final ProtocolFilterDto protocolFilterDto);
 }

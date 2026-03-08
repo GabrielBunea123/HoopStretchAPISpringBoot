@@ -30,24 +30,27 @@ public class ProtocolExerciseServiceImpl implements ProtocolExerciseService {
     final ProtocolExerciseSpecifications protocolExerciseSpecifications;
 
     @Override
-    public ProtocolExerciseResponseDto createProtocolExercise(final ProtocolExerciseRequestDto protocolExerciseRequestDto) {
-        final Protocol protocol = protocolRepository.findById(protocolExerciseRequestDto.getProtocolId())
+    public ProtocolExerciseResponseDto createProtocolExercise(final Long protocolId, final ProtocolExerciseRequestDto protocolExerciseRequestDto) {
+        final Protocol protocol = protocolRepository.findById(protocolId)
                 .orElseThrow(() -> new NotFoundException("Protocol not found"));
         final Exercise exercise = exerciseRepository.findById(protocolExerciseRequestDto.getExerciseId())
                 .orElseThrow(() -> new NotFoundException("Exercise not found"));
 
         int orderIndex = protocol.getExercises().size();
 
-        final ProtocolExercise protocolExercise = protocolExerciseMapper.toProtocolExercise(protocolExerciseRequestDto, protocol, exercise, orderIndex);
+        final ProtocolExercise protocolExercise = protocolExerciseMapper.toProtocolExercise(protocolExerciseRequestDto.getDuration(), protocol, exercise, orderIndex);
         final ProtocolExercise savedProtocolExercise = protocolExerciseRepository.save(protocolExercise);
         return protocolExerciseMapper.toProtocolExerciseResponseDto(savedProtocolExercise);
     }
 
     @Override
     public List<ProtocolExerciseResponseDto> getProtocolExercises(final Long protocolId, final ExerciseFilterDto exerciseFilterDto){
+        if (!protocolRepository.existsById(protocolId)) {
+            throw new NotFoundException("Protocol not found");
+        }
         final Specification<ProtocolExercise> spec = protocolExerciseSpecifications.buildFilters(protocolId, exerciseFilterDto);
         final List<ProtocolExercise> protocolExercises = protocolExerciseRepository.findAll(spec);
-        return protocolExerciseMapper.toDtoList(protocolExercises);
+        return protocolExerciseMapper.toProtocolExerciseResponseListDto(protocolExercises);
     }
 
     @Override

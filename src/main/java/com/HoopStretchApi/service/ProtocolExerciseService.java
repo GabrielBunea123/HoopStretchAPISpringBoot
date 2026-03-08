@@ -7,7 +7,7 @@ import com.HoopStretchApi.model.dto.protocol.ProtocolExerciseResponseDto;
 import java.util.List;
 
 public interface ProtocolExerciseService {
-    ProtocolExerciseResponseDto createProtocolExercise(final ProtocolExerciseRequestDto protocolExerciseRequestDto);
+    ProtocolExerciseResponseDto createProtocolExercise(final Long protocolId, final ProtocolExerciseRequestDto protocolExerciseRequestDto);
     List<ProtocolExerciseResponseDto> getProtocolExercises(final Long protocolId, final ExerciseFilterDto exerciseFilterDto);
     void deleteProtocolExercise(final Long protocolExerciseId);
 }

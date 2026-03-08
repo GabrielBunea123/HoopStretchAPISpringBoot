@@ -1,12 +1,13 @@
 package com.HoopStretchApi.model.dto.protocol;
 
-import com.HoopStretchApi.util.enums.ProtocolCategory;
-import com.HoopStretchApi.util.enums.ProtocolType;
-import com.HoopStretchApi.util.enums.ProtocolVisibility;
+import com.HoopStretchApi.util.enums.ProtocolTarget;
+import com.HoopStretchApi.util.enums.ProtocolPurpose;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,11 +16,8 @@ public class ProtocolRequestDto {
 
     private String name;
     @NotNull
-    private ProtocolCategory category;
+    private ProtocolTarget target;
     @NotNull
-    private ProtocolType type;
-    @NotNull
-    private ProtocolVisibility visibility;
-    @NotNull
-    private boolean isGenerated;
+    private ProtocolPurpose purpose;
+    private List<ProtocolExerciseRequestDto> exercises;
 }
