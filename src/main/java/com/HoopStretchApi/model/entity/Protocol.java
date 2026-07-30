@@ -42,8 +42,11 @@ public class Protocol extends Auditable {
     @Column(nullable = false)
     private boolean generated;
 
+    @Column
+    private Long copiedFrom;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @OneToMany(mappedBy = "protocol", cascade = CascadeType.ALL, orphanRemoval = true)

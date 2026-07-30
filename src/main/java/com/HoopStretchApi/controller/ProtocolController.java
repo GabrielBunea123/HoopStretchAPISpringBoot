@@ -9,6 +9,7 @@ import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolGenerationRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolResponseDto;
+import com.HoopStretchApi.model.dto.protocol.UpdateUserProtocolRequestDto;
 import com.HoopStretchApi.service.ProtocolGenerationService;
 import com.HoopStretchApi.service.ProtocolService;
 import com.HoopStretchApi.util.enums.ProtocolVisibility;
@@ -43,6 +44,156 @@ public class ProtocolController {
     private final PaginationMapper paginationMapper;
     private final ProtocolMapper protocolMapper;
 
+    @PostMapping("/me/generate")
+    @Operation(
+            summary = "Generate AI protocol",
+            description = "Generate a protocol tailored to the user using AI"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Protocol generated successfully",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ProtocolResponseDto> generateProtocol(
+            @Valid @RequestBody final ProtocolGenerationRequestDto protocolGenerationRequestDto,
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        final ProtocolResponseDto protocolResponseDto = protocolGenerationService.generateProtocol(userDetails.getUsername(), protocolGenerationRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(protocolResponseDto);
+    }
+
+    @PostMapping("/me")
+    @Operation(
+            summary = "Create user protocol",
+            description = "Create a protocol manually, only accessible by the authenticated user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User protocol created successfully",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ProtocolResponseDto> createUserProtocol(
+            @Valid @RequestBody final ProtocolRequestDto protocolRequestDto,
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        final ProtocolResponseDto protocolResponseDto = protocolService.createUserProtocol(protocolRequestDto, userDetails.getUsername());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(protocolResponseDto);
+    }
+
+    @GetMapping("/me")
+    @Operation(
+            summary = "Get user protocols",
+            description = "Get a paginated and filtered list of the authenticated user's protocols"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fetched user protocols successfully",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User protocols not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<PaginationResponseDto<ProtocolResponseDto>> getUserProtocols(
+            @RequestParam(defaultValue = DEFAULT_PAGE) final int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) final int size,
+            @RequestParam(required = false) final String sortBy,
+            @RequestParam(required = false, defaultValue = SortDirection.DEFAULT_SORT_DIRECTION) final SortDirection sortDirection,
+            @RequestParam(required = false, defaultValue = "") final String name,
+            @RequestParam(required = false, defaultValue = ProtocolVisibility.DEFAULT_PROTOCOL_VISIBILITY) final ProtocolVisibility visibility,
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        final PaginationRequestDto paginationRequestDto = paginationMapper.toPaginationRequestDto(
+                page,
+                size,
+                sortBy,
+                String.valueOf(sortDirection)
+        );
+        final ProtocolFilterDto protocolFilterDto = protocolMapper.toProtocolFilterDto(name, visibility);
+        final PaginationResponseDto<ProtocolResponseDto> protocols = protocolService.getUserProtocols(
+                userDetails.getUsername(),
+                paginationRequestDto,
+                protocolFilterDto
+        );
+        return ResponseEntity.ok(protocols);
+    }
+
+    @GetMapping("/me/{protocolId}")
+    @Operation(
+            summary = "Get user protocol by id",
+            description = "Fetch a specific protocol belonging to the authenticated user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User protocol found",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User protocol not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ProtocolResponseDto> getUserProtocolById(
+            @AuthenticationPrincipal final UserDetails userDetails,
+            @PathVariable final Long protocolId
+    ) {
+        return ResponseEntity.ok(protocolService.getUserProtocolById(userDetails.getUsername(), protocolId));
+    }
+
+    @PostMapping("/{protocolId}/copy")
+    @Operation(
+            summary = "Copy protocol",
+            description = "Copy an existing protocol into the authenticated user's own protocols"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Protocol copied successfully",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Protocol not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ProtocolResponseDto> copyProtocol(
+            @AuthenticationPrincipal final UserDetails userDetails,
+            @PathVariable final Long protocolId
+    ) {
+        final ProtocolResponseDto protocol = protocolService.copyProtocolIntoUserProtocol(userDetails.getUsername(), protocolId);
+        return ResponseEntity.ok(protocol);
+    }
+
+    @PutMapping("/me/{protocolId}")
+    @Operation(
+            summary = "Update user protocol",
+            description = "Update a protocol belonging to the authenticated user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Protocol updated successfully",
+                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Protocol not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
+    public ResponseEntity<ProtocolResponseDto> updateUserProtocol(
+            @AuthenticationPrincipal final UserDetails userDetails,
+            @PathVariable final Long protocolId,
+            @Valid @RequestBody final UpdateUserProtocolRequestDto updateUserProtocolRequestDto
+    ) {
+        return ResponseEntity.ok(protocolService.updateUserProtocol(userDetails.getUsername(), protocolId, updateUserProtocolRequestDto));
+    }
+
+    @DeleteMapping("/me/{protocolId}")
+    @Operation(
+            summary = "Delete user protocol",
+            description = "Delete a protocol belonging to the authenticated user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Protocol deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Protocol not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content)
+    })
+    public ResponseEntity<Void> deleteUserProtocol(
+            @AuthenticationPrincipal final UserDetails userDetails,
+            @PathVariable final Long protocolId
+    ) {
+        // TODO: implement
+        return null;
+    }
+
     @PostMapping("/public")
     @Operation(
             summary = "Create public protocol",
@@ -57,26 +208,6 @@ public class ProtocolController {
             @Valid @RequestBody final ProtocolRequestDto protocolRequestDto
     ){
         final ProtocolResponseDto protocolResponseDto = protocolService.createPublicProtocol(protocolRequestDto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(protocolResponseDto);
-    }
-
-    @PostMapping("/ai-generation")
-    @Operation(
-            summary = "Custom AI generated protocol",
-            description = "Generate a protocol, tailored to the user, using AI"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Protocol generated successfully",
-                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
-    })
-    public ResponseEntity<ProtocolResponseDto>generateProtocol(
-            @Valid @RequestBody final ProtocolGenerationRequestDto protocolGenerationRequestDto,
-            @AuthenticationPrincipal final UserDetails userDetails
-    ){
-        final ProtocolResponseDto protocolResponseDto = protocolGenerationService.generateProtocol(userDetails.getUsername(), protocolGenerationRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(protocolResponseDto);
@@ -100,91 +231,6 @@ public class ProtocolController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(protocolResponseDto);
-    }
-
-    @PostMapping("/me")
-    @Operation(
-            summary = "Create user protocol",
-            description = "Create a protocol, only accessible by the user"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User protocol created from scratch was a success",
-                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
-    })
-    public ResponseEntity<ProtocolResponseDto> createUserProtocol(
-            @Valid @RequestBody final ProtocolRequestDto protocolRequestDto,
-            @AuthenticationPrincipal final UserDetails userDetails
-    ){
-        final ProtocolResponseDto protocolResponseDto = protocolService.createUserProtocol(protocolRequestDto, userDetails.getUsername());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(protocolResponseDto);
-    }
-
-    @GetMapping("/me")
-    @Operation(
-            summary = "Get user protocols",
-            description = "Get a list of paginated and filtred user protocols"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Fetched user protocols successfully",
-                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "User protocols not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
-    })
-    public ResponseEntity<PaginationResponseDto<ProtocolResponseDto>>getUserProtocols(
-            @RequestParam(defaultValue = DEFAULT_PAGE) final int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) final int size,
-            @RequestParam(required = false) final String sortBy,
-            @RequestParam(required = false, defaultValue = SortDirection.DEFAULT_SORT_DIRECTION) final SortDirection sortDirection,
-            @RequestParam(required = false, defaultValue = "") final String name,
-            @RequestParam(required = false, defaultValue = ProtocolVisibility.DEFAULT_PROTOCOL_VISIBILITY) final ProtocolVisibility visibility,
-            @AuthenticationPrincipal final UserDetails userDetails){
-        final PaginationRequestDto paginationRequestDto = paginationMapper.toPaginationRequestDto(
-                page,
-                size,
-                sortBy,
-                String.valueOf(sortDirection)
-        );
-        final ProtocolFilterDto protocolFilterDto = protocolMapper.toProtocolFilterDto(name, visibility);
-        final PaginationResponseDto<ProtocolResponseDto> protocols = protocolService.getUserProtocols(userDetails.getUsername(), paginationRequestDto,protocolFilterDto);
-        return ResponseEntity.ok(protocols);
-    }
-
-
-    @PostMapping("/me/{protocolId}")
-    @Operation(
-            summary = "Create user protocol from generated protocol"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User protocol created successfully from already generated protocol",
-                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
-    })
-    public ResponseEntity<ProtocolResponseDto>createUserProtocolFromGeneratedProtocol(
-            @AuthenticationPrincipal final UserDetails userDetails,
-            @PathVariable final Long protocolId){
-        // TODO: implement it
-        return null;
-    }
-
-    @GetMapping("/me/{protocolId}")
-    @Operation(
-            summary = "Get user protocol by id",
-            description = "Given the id of the protocol and the user, fetch the protocol"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User protocol found",
-                    content = @Content(schema = @Schema(implementation = ProtocolResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "User protocol not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
-    })
-    public ResponseEntity<ProtocolResponseDto>getUserProtocolById(
-            @AuthenticationPrincipal final UserDetails userDetails,
-            @PathVariable final Long protocolId){
-
-        return ResponseEntity.ok(protocolService.getUserProtocolById(userDetails.getUsername(), protocolId));
     }
 
 }

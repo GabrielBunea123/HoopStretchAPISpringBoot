@@ -28,7 +28,7 @@ public class ExerciseRequestDto {
     @NotNull
     private boolean isInMobilityTest;
     @NotNull
-    private String coverURL;
+    private String coverS3Key;
     @NotNull
-    private String videoURL;
+    private String videoS3Key;
 }

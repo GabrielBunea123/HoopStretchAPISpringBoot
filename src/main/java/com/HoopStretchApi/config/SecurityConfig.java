@@ -6,11 +6,18 @@ import com.HoopStretchApi.config.properties.CorsProperties;
 import com.HoopStretchApi.service.CookieService;
 import com.HoopStretchApi.service.CustomUserDetailsService;
 import com.HoopStretchApi.service.JwtService;
+import com.HoopStretchApi.service.UserRoleService;
+import com.HoopStretchApi.util.enums.ApiPath;
 import com.HoopStretchApi.util.enums.Endpoints;
+import com.HoopStretchApi.util.enums.RoleEnum;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,7 +30,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role(RoleEnum.SUPER_ADMIN.getValue()).implies(RoleEnum.ADMIN.getValue())
+                .role(RoleEnum.ADMIN.getValue()).implies(RoleEnum.MODERATOR.getValue())
+                .role(RoleEnum.MODERATOR.getValue()).implies(RoleEnum.PREMIUM.getValue())
+                .role(RoleEnum.PREMIUM.getValue()).implies(RoleEnum.USER.getValue())
+                .build();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(
@@ -34,9 +52,32 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(Endpoints.REGISTER.getValue(), Endpoints.LOGIN.getValue(), Endpoints.REFRESH.getValue(), Endpoints.SWAGGER_UI_ALL.getValue(), Endpoints.V3_API_DOCS_ALL.getValue()).permitAll()
-                        .anyRequest().authenticated()
-//                                .anyRequest().permitAll()
 
+                        // exercises
+                        .requestMatchers(HttpMethod.POST, ApiPath.EXERCISES.getValue()).hasRole(RoleEnum.ADMIN.getValue())
+                        .requestMatchers(HttpMethod.PUT, ApiPath.EXERCISES.getValue()).hasRole(RoleEnum.ADMIN.getValue())
+                        .requestMatchers(HttpMethod.DELETE, ApiPath.EXERCISES.getValue()).hasRole(RoleEnum.ADMIN.getValue())
+                        .requestMatchers(HttpMethod.GET, ApiPath.EXERCISES.getValue()).hasRole(RoleEnum.USER.getValue())
+                        
+                        // protocols
+                        .requestMatchers(HttpMethod.POST, ApiPath.USER_PROTOCOLS.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.PUT, ApiPath.USER_PROTOCOLS.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.DELETE, ApiPath.USER_PROTOCOLS.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.GET, ApiPath.USER_PROTOCOLS.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        
+                        // protocol-exercises
+                        .requestMatchers(HttpMethod.POST, ApiPath.PROTOCOL_EXERCISES.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.PUT, ApiPath.PROTOCOL_EXERCISES.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.DELETE, ApiPath.PROTOCOL_EXERCISES.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+                        .requestMatchers(HttpMethod.GET, ApiPath.PROTOCOL_EXERCISES.getValue()).hasRole(RoleEnum.PREMIUM.getValue())
+
+                        // mobility-assessments
+                        .requestMatchers(HttpMethod.POST, ApiPath.MOBILITY_ASSESSMENTS.getValue()).hasRole(RoleEnum.USER.getValue())
+                        .requestMatchers(HttpMethod.PUT, ApiPath.MOBILITY_ASSESSMENTS.getValue()).hasRole(RoleEnum.USER.getValue())
+                        .requestMatchers(HttpMethod.DELETE, ApiPath.MOBILITY_ASSESSMENTS.getValue()).hasRole(RoleEnum.USER.getValue())
+                        .requestMatchers(HttpMethod.GET, ApiPath.MOBILITY_ASSESSMENTS.getValue()).hasRole(RoleEnum.USER.getValue())
+
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAt(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -57,13 +98,15 @@ public class SecurityConfig {
             final HandlerExceptionResolver handlerExceptionResolver,
             final JwtService jwtService,
             final CustomUserDetailsService customUserDetailsService,
-            final CookieService cookieService
+            final CookieService cookieService,
+            final UserRoleService userRoleService
     ) {
         return new JwtAuthenticationFilter(
                 handlerExceptionResolver,
                 jwtService,
                 customUserDetailsService,
-                cookieService);
+                cookieService,
+                userRoleService);
     }
 
     @Bean

@@ -38,6 +38,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
+    //TODO: Assign role to user on registration
     @PostMapping("/register")
     @Operation(
             summary = "Register a new user",

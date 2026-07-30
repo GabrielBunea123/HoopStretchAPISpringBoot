@@ -66,9 +66,9 @@ public class Exercise extends Auditable {
     private boolean isInMobilityTest = false;
 
     @Column(name = "cover_url")
-    private String coverURL;
+    private String coverS3Key;
 
     @Column(name = "video_url")
-    private String videoURL;
+    private String videoS3Key;
 
 }

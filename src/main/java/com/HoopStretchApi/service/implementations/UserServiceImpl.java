@@ -6,10 +6,13 @@ import com.HoopStretchApi.mapper.UserMapper;
 import com.HoopStretchApi.model.dto.user.UserRegisterRequestDto;
 import com.HoopStretchApi.model.dto.user.UserResponseDto;
 import com.HoopStretchApi.model.entity.MuscleGroup;
+import com.HoopStretchApi.model.entity.Role;
 import com.HoopStretchApi.model.entity.User;
 import com.HoopStretchApi.repository.MuscleGroupRepository;
+import com.HoopStretchApi.repository.RoleRepository;
 import com.HoopStretchApi.repository.UserRepository;
 import com.HoopStretchApi.service.UserService;
+import com.HoopStretchApi.util.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final MuscleGroupRepository muscleGroupRepository;
 
@@ -44,6 +48,9 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(user.getEmail())){
             throw new ConflictException("The email is already in use");
         }
+        final RoleEnum defaultRoleEnum = RoleEnum.USER;
+        final Role role = roleRepository.findByName(defaultRoleEnum.getValue());
+        user.assignRole(role, null);
         userRepository.save(user);
     }
 }

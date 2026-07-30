@@ -1,5 +1,6 @@
 package com.HoopStretchApi.service.implementations;
 
+import com.HoopStretchApi.exception.ConflictException;
 import com.HoopStretchApi.exception.NotFoundException;
 import com.HoopStretchApi.mapper.ProtocolExerciseMapper;
 import com.HoopStretchApi.mapper.ProtocolMapper;
@@ -9,6 +10,7 @@ import com.HoopStretchApi.model.dto.protocol.ProtocolExerciseRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolFilterDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolRequestDto;
 import com.HoopStretchApi.model.dto.protocol.ProtocolResponseDto;
+import com.HoopStretchApi.model.dto.protocol.UpdateUserProtocolRequestDto;
 import com.HoopStretchApi.model.entity.Exercise;
 import com.HoopStretchApi.model.entity.Protocol;
 import com.HoopStretchApi.model.entity.ProtocolExercise;
@@ -110,6 +112,58 @@ public class ProtocolServiceImpl implements ProtocolService {
                 protocolsPage.getTotalElements(),
                 protocolsPage.getTotalPages()
         );
+    }
+
+    @Override
+    public ProtocolResponseDto copyProtocolIntoUserProtocol(final String username, final Long existingProtocolId) {
+        final User owner = userService.getUserByUsername(username);
+        final Protocol existingProtocol = protocolRepository.findById(existingProtocolId)
+                .orElseThrow(() -> new NotFoundException("Protocol not found"));
+
+        if(!existingProtocol.isGenerated() && existingProtocol.getOwner() == owner && existingProtocol.getVisibility() == ProtocolVisibility.PRIVATE){
+            throw new ConflictException("The protocol is already in your own private protocol list");
+        }
+
+        final Protocol copy = Protocol.builder()
+                .owner(owner)
+                .generated(false)
+                .purpose(existingProtocol.getPurpose())
+                .visibility(ProtocolVisibility.PRIVATE)
+                .durationSeconds(existingProtocol.getDurationSeconds())
+                .exercises(new LinkedHashSet<>())
+                .copiedFrom(existingProtocol.getId())
+                .build();
+
+        existingProtocol.getExercises().stream()
+                .map(protocolExercise -> ProtocolExercise.builder()
+                        .protocol(copy)
+                        .exercise(protocolExercise.getExercise())
+                        .duration(protocolExercise.getDuration())
+                        .orderIndex(protocolExercise.getOrderIndex())
+                        .build()
+                )
+                .forEach(copy.getExercises()::add);
+
+        return protocolMapper.toProtocolResponseDto(protocolRepository.save(copy));
+    }
+
+    @Override
+    @Transactional
+    public ProtocolResponseDto updateUserProtocol(
+            final String username,
+            final Long protocolId,
+            final UpdateUserProtocolRequestDto updateUserProtocolRequestDto){
+
+        final User owner = userService.getUserByUsername(username);
+        final Protocol protocol = protocolRepository.findById(protocolId)
+                .orElseThrow(() -> new NotFoundException(String.format("Protocol with id %d not found", protocolId)));
+        if(protocol.getOwner() != owner){
+            throw new ConflictException("You are not the owner of this protocol");
+        }
+
+        protocolMapper.updateProtocolFromDto(updateUserProtocolRequestDto, protocol);
+
+        return protocolMapper.toProtocolResponseDto(protocolRepository.save(protocol));
     }
 
     private List<Exercise> getAndValidateExercises(final List<Long> exerciseIds) {

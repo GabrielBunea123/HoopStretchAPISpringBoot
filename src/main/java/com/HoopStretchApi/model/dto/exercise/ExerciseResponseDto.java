@@ -23,6 +23,6 @@ public class ExerciseResponseDto {
     private List<String> guidelines;
     private List<String> contraindications;
     private boolean isInMobilityTest;
-    private String coverURL;
-    private String videoURL;
+    private String coverS3Key;
+    private String videoS3Key;
 }

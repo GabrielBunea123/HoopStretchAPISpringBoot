@@ -15,6 +15,7 @@ public class Constants {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String DEFAULT_PAGE = "0";
     public static final String DEFAULT_PAGE_SIZE = "10";
+    public static final String ROLE_PREFIX = "ROLE_";
     public static final int MIN_MOBILITY_ASSESSMENT_SCORE = 1;
     public static final int MAX_MOBILITY_ASSESSMENT_SCORE = 10;
 

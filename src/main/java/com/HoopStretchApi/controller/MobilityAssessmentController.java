@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/mobility-assessment")
+@RequestMapping("/mobility-assessments")
 @AllArgsConstructor
 @Tag(name = "MobilityAssessment")
 public class MobilityAssessmentController {
