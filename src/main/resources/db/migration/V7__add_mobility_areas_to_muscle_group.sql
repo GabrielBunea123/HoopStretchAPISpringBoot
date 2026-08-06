@@ -1,5 +1,5 @@
 ALTER TABLE muscle_group
-DROP COLUMN mobility_area;
+DROP COLUMN IF EXISTS mobility_area;
 
 ALTER TABLE muscle_group
 ADD COLUMN mobility_area VARCHAR(50);
